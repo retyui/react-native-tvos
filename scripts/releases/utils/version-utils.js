@@ -135,7 +135,7 @@ function validatePrealpha(version /*: Version */) {
 
 function isStableRelease(version /*: Version */) /*: boolean */ {
   return (
-    version.major === '0' && version.minor !== '0' && version.prerelease == null
+    version.major === '0' && version.minor !== '0'
   );
 }
 
