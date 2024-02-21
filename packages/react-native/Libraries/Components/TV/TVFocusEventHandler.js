@@ -16,6 +16,33 @@ import {type EventSubscription} from '../../vendor/emitter/EventEmitter';
 import NativeTVNavigationEventEmitter from './NativeTVNavigationEventEmitter';
 import type {TVRemoteEvent} from '../../Types/CoreEventTypes';
 
+const debounceDelay = 300;
+const debounceMaxEvents = 5;
+
+// Debounces the focus events with a 300 ms debounce window
+// Only fire the last 5 events seen
+const debounce = (callback, data) => {
+  let timeoutId;
+  let queue = [];
+  return () => {
+    queue.push({
+      callback,
+      data,
+    });
+    if (queue.length > debounceMaxEvents) {
+      queue.shift();
+    }
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      while (queue.length > 0) {
+        const item = queue.shift();
+        item.callback(item.data);
+      }
+      queue = [];
+    }, debounceDelay);
+  };
+};
+
 class TVFocusEventHandler {
   __nativeTVNavigationEventListener: ?EventSubscription = null;
   __nativeTVNavigationEventEmitter: ?NativeEventEmitter<TVRemoteEvent> = null;
@@ -35,7 +62,8 @@ class TVFocusEventHandler {
       data => {
         const callback = this.__callbackMap.get(data.tag);
         if (callback) {
-          callback(data);
+          //callback(data);
+          debounce(callback, data)();
         }
       },
     );
