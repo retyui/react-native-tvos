@@ -236,9 +236,11 @@ function findExternalLibraries(pkgJson) {
   );
   // Handle third-party libraries
   return Object.keys(dependencies).flatMap(dependency => {
+    const realDependency =
+      dependency === 'react-native' ? 'react-native-tvos' : dependency;
     try {
       const configFilePath = require.resolve(
-        path.join(dependency, 'package.json'),
+        path.join(realDependency, 'package.json'),
       );
       const configFile = JSON.parse(fs.readFileSync(configFilePath));
       const codegenConfigFileDir = path.dirname(configFilePath);
