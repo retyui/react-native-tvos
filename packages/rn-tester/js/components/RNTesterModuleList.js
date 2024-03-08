@@ -22,6 +22,7 @@ const ExampleModuleRow = ({
   onHideUnderlay,
   item,
   handlePress,
+  hasTVPreferredFocus,
 }) => {
   const theme = React.useContext(RNTesterThemeContext);
   const platform = item.module.platform;
@@ -29,6 +30,7 @@ const ExampleModuleRow = ({
   const onAndroid = !platform || platform === 'android';
   return (
     <RNTPressableRow
+      hasTVPreferredFocus={hasTVPreferredFocus}
       title={item.module.title}
       description={item.module.description}
       testID={item.module.title}
@@ -99,6 +101,7 @@ const RNTesterModuleList: React$AbstractComponent<any, void> = React.memo(
     const renderListItem = ({item, section, separators}) => {
       return (
         <ExampleModuleRow
+          hasTVPreferredFocus={item.module.title === 'ActivityIndicator'}
           item={item}
           section={section}
           onShowUnderlay={separators.highlight}

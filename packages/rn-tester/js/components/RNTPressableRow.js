@@ -36,11 +36,13 @@ export default function RNTPressableRow({
   onPress,
   style,
   accessibilityLabel,
+  hasTVPreferredFocus,
 }: Props): React.Node {
   const theme = React.useContext(RNTesterThemeContext);
   const label = accessibilityLabel ?? `${title} ${description ?? ''}`;
   return (
     <Pressable
+      hasTVPreferredFocus={hasTVPreferredFocus}
       testID={title}
       onPressIn={onPressIn}
       onPressOut={onPressOut}
