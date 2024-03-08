@@ -11,7 +11,7 @@
 'use strict';
 
 import invariant from 'invariant';
-import ReactNative from '../../Renderer/shims/ReactNative';
+import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
 import type {
   BlurEvent,
   FocusEvent,
@@ -41,7 +41,7 @@ export default class TVTouchable {
       if (!_tvtouchable._enabled) {
         return;
       }
-      if (ReactNative.findNodeHandle(component) === tvData.tag) {
+      if (tagForComponentOrHandle(component) === tvData.tag) {
         if (tvData.eventType === 'focus') {
           config.onFocus(tvData);
         } else if (tvData.eventType === 'blur') {
