@@ -141,6 +141,16 @@ async function setReactNativePackageVersion(
 
   packageJson.version = version;
 
+  // Update virtualized-lists dependency
+  packageJson.dependencies['@react-native-tvos/virtualized-lists'] = version;
+
+  // Derive core version from this version, e.g. 73.0-0 uses core version 73.0
+  const coreVersion = version.split('-')[0] + '-rc.3';
+  packageJson.devDependencies = packageJson.devDependencies ?? {};
+  packageJson.devDependencies[
+    'react-native-core'
+  ] = `npm:react-native@${coreVersion}`;
+
   await fs.writeFile(
     path.join(REPO_ROOT, 'packages/react-native/package.json'),
     JSON.stringify(packageJson, null, 2),
