@@ -229,6 +229,7 @@ function findExternalLibraries(pkgJson) {
     ...pkgJson.dependencies,
     ...pkgJson.devDependencies,
     ...pkgJson.peerDependencies,
+    'react-native-tvos': '*',
   };
   // Determine which of these are codegen-enabled libraries
   console.log(
@@ -236,11 +237,9 @@ function findExternalLibraries(pkgJson) {
   );
   // Handle third-party libraries
   return Object.keys(dependencies).flatMap(dependency => {
-    const realDependency =
-      dependency === 'react-native' ? 'react-native-tvos' : dependency;
     try {
       const configFilePath = require.resolve(
-        path.join(realDependency, 'package.json'),
+        path.join(dependency, 'package.json'),
       );
       const configFile = JSON.parse(fs.readFileSync(configFilePath));
       const codegenConfigFileDir = path.dirname(configFilePath);
