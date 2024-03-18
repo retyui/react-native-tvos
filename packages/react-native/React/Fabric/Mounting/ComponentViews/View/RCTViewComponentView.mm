@@ -18,7 +18,7 @@
 #import <React/RCTDefines.h>
 #import <React/RCTLog.h>
 
-#import <React/RCTRootComponentView.h>
+#import <React/RCTSurfaceHostingProxyRootView.h>
 
 #import <react/renderer/components/view/ViewComponentDescriptor.h>
 #import <react/renderer/components/view/ViewEventEmitter.h>
@@ -148,21 +148,21 @@ using namespace facebook::react;
 
 #pragma mark - Apple TV methods
 
-- (RCTRootComponentView *)containingRootView
+- (RCTSurfaceHostingProxyRootView *)containingRootView
 {
   UIView *rootview = self;
-  if ([rootview class] == [RCTRootComponentView class]) {
-    return (RCTRootComponentView *)rootview;
+  if ([rootview class] == [RCTSurfaceHostingProxyRootView class]) {
+    return (RCTSurfaceHostingProxyRootView *)rootview;
   }
   do {
     rootview = [rootview superview];
-  } while (([rootview class] != [RCTRootComponentView class]) && rootview != nil);
-  return (RCTRootComponentView *)rootview;
+  } while (([rootview class] != [RCTSurfaceHostingProxyRootView class]) && rootview != nil);
+  return (RCTSurfaceHostingProxyRootView *)rootview;
 }
 
 /// Handles self-focusing logic. Shouldn't be used directly, use `requestFocusSelf` method instead.
 -(bool)focusSelf {
-  RCTRootComponentView *rootview = [self containingRootView];
+  RCTSurfaceHostingProxyRootView *rootview = [self containingRootView];
   if (rootview == nil) return false;
   
   if (self.focusGuide != nil) {
@@ -592,7 +592,7 @@ using namespace facebook::react;
     }
     NSArray *destinationTags = (NSArray<NSNumber *> *)args[0];
     NSMutableArray *destinations = [NSMutableArray new];
-    RCTRootComponentView *rootView = [self containingRootView];
+    RCTSurfaceHostingProxyRootView *rootView = [self containingRootView];
     for (NSNumber *tag in destinationTags) {
       UIView *view = [rootView viewWithTag:[tag intValue]];
       if (view != nil) {
@@ -1045,7 +1045,7 @@ using namespace facebook::react;
   
 #if TARGET_OS_TV
   if (_hasTVPreferredFocus) {
-    RCTRootComponentView *rootview = [self containingRootView];
+    RCTSurfaceHostingProxyRootView *rootview = [self containingRootView];
     if (rootview != nil && rootview.reactPreferredFocusedView != self) {
       [self requestFocusSelf];
     }
