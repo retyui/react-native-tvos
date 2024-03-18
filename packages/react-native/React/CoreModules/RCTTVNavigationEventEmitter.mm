@@ -42,16 +42,12 @@ RCT_EXPORT_MODULE()
 
 - (void)handleTVNavigationEventNotification:(NSNotification *)notif
 {
-  if (self.bridge) {
     [self sendEventWithName:TVNavigationEventName body:notif.object];
-  }
 }
 
-- (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
-    (const facebook::react::ObjCTurboModule::InitParams &)params
+- (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:(const facebook::react::ObjCTurboModule::InitParams &)params
 {
-  //return std::make_shared<facebook::react::NativeTVNavigationEventEmitterSpecJSI>(params);
-  return 0;
+  return std::make_shared<facebook::react::NativeTVNavigationEventEmitterSpecJSI>(params);
 }
 
 @end

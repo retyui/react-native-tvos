@@ -13,7 +13,7 @@
 import NativeEventEmitter from '../../EventEmitter/NativeEventEmitter';
 import Platform from '../../Utilities/Platform';
 import {type EventSubscription} from '../../vendor/emitter/EventEmitter';
-import NativeTVNavigationEventEmitter from './NativeTVNavigationEventEmitter';
+import NativeTVNavigationEventEmitter from '../../../src/private/specs/modules/NativeTVNavigationEventEmitter';
 import type {TVRemoteEvent} from '../../Types/CoreEventTypes';
 
 class TVEventHandler {
@@ -25,18 +25,18 @@ class TVEventHandler {
       return;
     }
 
-    this.__nativeTVNavigationEventEmitter = new NativeEventEmitter<TVRemoteEvent>(
-      NativeTVNavigationEventEmitter,
-    );
-    this.__nativeTVNavigationEventListener = this.__nativeTVNavigationEventEmitter.addListener(
-      // $FlowFixMe[prop-missing]
-      'onHWKeyEvent',
-      data => {
-        if (callback) {
-          callback(component, data);
-        }
-      },
-    );
+    this.__nativeTVNavigationEventEmitter =
+      new NativeEventEmitter<TVRemoteEvent>(NativeTVNavigationEventEmitter);
+    this.__nativeTVNavigationEventListener =
+      this.__nativeTVNavigationEventEmitter.addListener(
+        // $FlowFixMe[prop-missing]
+        'onHWKeyEvent',
+        data => {
+          if (callback) {
+            callback(component, data);
+          }
+        },
+      );
   }
 
   disable(): void {
