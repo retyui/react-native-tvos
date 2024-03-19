@@ -4,7 +4,7 @@
 
 // TODO: make this work for Fabric
 
-import {findNodeHandle} from '../../Renderer/shims/ReactNative';
+const findNodeHandle = require('../../ReactNative/RendererProxy').findNodeHandle;
 
 type TagForComponentOrHandleType = (
     component: ?(
