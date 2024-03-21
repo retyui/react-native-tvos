@@ -135,14 +135,16 @@ function validatePrealpha(version /*: Version */) {
 
 function isStableRelease(version /*: Version */) /*: boolean */ {
   return (
-    version.major === '0' && version.minor !== '0'
+    version.major === '0' &&
+    !!version.minor.match(/^\d+$/) &&
+    !!version.patch.match(/^\d+$/)
   );
 }
 
 function isStablePrerelease(version /*: Version */) /*: boolean */ {
   return !!(
     version.major === '0' &&
-    version.minor !== '0' &&
+    version.minor.match(/^\d+$/) &&
     version.patch.match(/^\d+$/) &&
     (version.prerelease?.startsWith('rc.') ||
       version.prerelease?.startsWith('rc-') ||
