@@ -188,35 +188,47 @@ const getSelectedItemPrefix = (selectedCategory: string) => {
   return `Category ${selectedCategory} - Item`;
 };
 
-const Row = ({title, focusable}) => {
-  const [selectedCategory, setSelectedCategory] = React.useState('1');
+const Row = React.forwardRef(
+  ({title, focusable, destinations, onFocus}, ref) => {
+    const [selectedCategory, setSelectedCategory] = React.useState('1');
 
-  const onCategoryFocused = (event, id: number) => {
-    setSelectedCategory(id.toString());
-  };
+    const onCategoryFocused = (event, id: number) => {
+      setSelectedCategory(id.toString());
+      onFocus && onFocus();
+    };
 
-  return (
-    <View style={styles.mb5}>
-      <TVFocusGuide autoFocus style={styles.rowTop} focusable={focusable}>
-        <Text style={styles.rowTitle}>{title}</Text>
-        <HList
-          prefix="Category"
-          itemCount={5}
-          data={categoryData}
-          itemHeight={50 * scale}
-          itemWidth={200 * scale}
-          onItemFocused={onCategoryFocused}
-        />
-      </TVFocusGuide>
-      <TVFocusGuide autoFocus style={styles.mb5} focusable={focusable}>
-        <HList
-          prefix={getSelectedItemPrefix(selectedCategory)}
-          itemCount={10}
-        />
-      </TVFocusGuide>
-    </View>
-  );
-};
+    return (
+      <View style={styles.mb5}>
+        <TVFocusGuide
+          ref={ref}
+          destinations={destinations}
+          autoFocus
+          style={styles.rowTop}
+          focusable={focusable}>
+          <Text style={styles.rowTitle}>{title}</Text>
+          <HList
+            prefix="Category"
+            itemCount={5}
+            data={categoryData}
+            itemHeight={50 * scale}
+            itemWidth={200 * scale}
+            onItemFocused={onCategoryFocused}
+          />
+        </TVFocusGuide>
+        <TVFocusGuide
+          autoFocus
+          style={styles.mb5}
+          focusable={focusable}
+          destinations={destinations}>
+          <HList
+            prefix={getSelectedItemPrefix(selectedCategory)}
+            itemCount={10}
+          />
+        </TVFocusGuide>
+      </View>
+    );
+  },
+);
 
 const Col = ({title}) => {
   return (
@@ -420,6 +432,15 @@ type ContentAreaProps = $ReadOnly<{|
 
 const ContentArea = React.forwardRef(
   ({sideMenuRef}: ContentAreaProps, forwardedRef) => {
+    const upperRef = React.useRef(null);
+    const lowerRef = React.useRef(null);
+    const [destinations, setDestinations] = React.useState([]);
+
+    React.useEffect(() => {
+      if (lowerRef?.current) {
+        setDestinations([lowerRef?.current]);
+      }
+    }, [lowerRef]);
     return (
       <TVFocusGuide ref={forwardedRef} autoFocus style={{flex: 1}}>
         <ScrollView>
@@ -431,10 +452,20 @@ const ContentArea = React.forwardRef(
           <RestoreFocusOnScrollToTopTestList />
           <SlowListFocusTest />
           <Row title="Category Example 1" />
-          <Row title="Category Example 2" />
-          <Row title="Disabled Focus Subviews Example" focusable={false} />
+          <Row
+            ref={upperRef}
+            title="Category Example 2"
+            onFocus={() => setDestinations([lowerRef?.current])}
+          />
+          <Row
+            title="Disabled Focus Subviews Example"
+            focusable={true}
+            destinations={destinations}
+          />
 
           <FocusableBox
+            ref={lowerRef}
+            onFocus={() => setDestinations([upperRef?.current])}
             style={styles.focusToSideMenuBtn}
             text="Focus To Side Menu"
             onPress={() => {
